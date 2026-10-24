@@ -42,10 +42,8 @@ CHROMA_DIR.mkdir(parents=True, exist_ok=True)
 
 # OpenAI兼容接口配置(阿里云MaaS)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_BASE_URL = os.getenv(
-    "OPENAI_BASE_URL",
-    "https://dashscope.aliyuncs.com/compatible-mode/v1",
-)
+# 阿里云百炼工作空间的 OpenAI 兼容接口地址
+OPENAI_BASE_URL = "https://ws-gdjabdxi8ehn33fh.cn-beijing.maas.aliyuncs.com/compatible-mode/v1"
 CHAT_MODEL = "qwen3.8-max"
 EMBEDDING_MODEL = "text-embedding-v4"
 EMBEDDING_DIMENSIONS = 2048

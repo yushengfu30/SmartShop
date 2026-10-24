@@ -3,6 +3,7 @@
  * 统一处理Token和响应
  */
 const API_PORT = 8000
+/** 模拟器走 127.0.0.1，不用改；真机调试再改成电脑的局域网 IP */
 const DEVICE_HOST = '127.0.0.1'
 
 function resolveHost() {
