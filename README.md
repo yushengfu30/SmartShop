@@ -1,6 +1,16 @@
-# SmartShop
+# 基于 LangChain 的带 AI 智能客服的微信小程序商城
 
-基于 LangChain RAG 的微信小程序智能商城。用户端走小程序完成浏览、下单和客服问答，管理端用 Vue3 维护商品与知识库，后端 FastAPI 统一提供接口。
+个人项目（2026.03 – 2026.05）
+
+独立完成微信小程序、Vue3 管理后台与 FastAPI 后端，实现商品浏览、购物车、地址管理、下单支付，以及基于知识库检索的 AI 客服。
+
+- 基于 LangChain + Chroma 搭建 RAG 流程：知识库文件解析、分块、向量化、Top-K 检索后注入 Prompt，对接阿里云百炼 Qwen，小程序侧按会话保存问答记录
+- 管理端支持 txt / doc / pdf / markdown 上传后自动解析并写入向量库，可按文件重新向量化或删除，实现知识库与问答同步更新
+- 用户端与管理端共用 JWT，按 `type` 区分身份；下单时校验库存、生成订单号、写入明细并扣减库存，支付后回写销量
+
+**技术栈：** FastAPI、LangChain、Chroma、Vue3、微信小程序、MySQL、JWT、ECharts
+
+管理后台另用 Vite、Pinia、Element Plus；向量检索使用阿里云百炼 Embedding，对话模型为 Qwen。
 
 ## 功能
 
@@ -8,29 +18,20 @@
 
 - 账号注册 / 登录、个人资料与头像
 - 首页轮播、分类浏览、商品详情
-- 购物车、收货地址、下单与模拟支付、订单列表
+- 购物车、地址管理、下单支付、订单列表
 - AI 客服：按会话提问，答案来自知识库检索 + 大模型
 
 **管理后台**
 
-- 数据看板：用户数、订单数、销售额，近 7 日趋势、分类占比、订单状态、热销 Top5
+- 数据看板（ECharts）：用户数、订单数、销售额，近 7 日趋势、分类占比、订单状态、热销 Top5
 - 商品、分类、轮播图、订单、用户管理
 - 知识库：上传 txt / doc / pdf / markdown，自动解析并向量化，支持重新向量化与删除
 
 **后端**
 
-- 用户 / 管理员双身份 JWT 鉴权
-- 下单校验库存、生成订单号、写入明细并扣库存，支付后回写销量
-- RAG：文件解析 → 分块 → Embedding → Chroma 检索 → Prompt 增强问答
-
-## 技术栈
-
-| 端 | 技术 |
-|---|---|
-| 小程序 | 微信原生小程序 |
-| 管理后台 | Vue 3、Vite、Pinia、Vue Router、Element Plus、ECharts、Axios |
-| 后端 | FastAPI、SQLAlchemy、MySQL、JWT |
-| AI | LangChain、Chroma、阿里云百炼（Qwen + text-embedding-v4） |
+- 用户 / 管理员共用 JWT，按 `type` 区分身份
+- 下单校验库存、生成订单号、写入明细并扣减库存，支付后回写销量
+- RAG：文件解析 → 分块 → 向量化 → Top-K 检索 → 注入 Prompt → Qwen 问答
 
 ## 目录
 
