@@ -183,10 +183,10 @@ CREATE TABLE `t_knowledge_file` (
 /*Data for the table `t_knowledge_file` */
 
 insert  into `t_knowledge_file`(`id`,`file_name`,`file_type`,`file_path`,`file_size`,`chunk_count`,`status`,`error_msg`,`create_time`,`update_time`) values 
-(4,'常见商品问题.md','markdown','D:/FGLPythonProjects/27MallProject/SmartShop/uploads14/knowledge/5d2c51896a424d25879b91569cb467f0.md',4445,4,1,NULL,'2026-06-29 08:27:00','2026-06-29 08:27:01'),
-(5,'常见售后问题.docx','doc','D:/FGLPythonProjects/27MallProject/SmartShop/uploads14/knowledge/0f2caba5851948d4ab9c929f788bead2.docx',15111,6,1,NULL,'2026-06-29 08:27:22','2026-06-29 08:27:22'),
-(6,'常见物流问题.txt','txt','D:/FGLPythonProjects/27MallProject/SmartShop/uploads14/knowledge/3d6d8bd179824740914928ae72d85434.txt',3207,3,1,NULL,'2026-06-29 08:27:26','2026-06-29 08:27:27'),
-(7,'其他问题.pdf','pdf','D:/FGLPythonProjects/27MallProject/SmartShop/uploads14/knowledge/d9b6195096ca41338190be2333104105.pdf',473663,6,1,NULL,'2026-06-29 08:27:30','2026-06-29 08:27:30');
+(4,'常见商品问题.md','markdown','uploads14/knowledge/5d2c51896a424d25879b91569cb467f0.md',4445,4,1,NULL,'2026-06-29 08:27:00','2026-06-29 08:27:01'),
+(5,'常见售后问题.docx','doc','uploads14/knowledge/0f2caba5851948d4ab9c929f788bead2.docx',15111,6,1,NULL,'2026-06-29 08:27:22','2026-06-29 08:27:22'),
+(6,'常见物流问题.txt','txt','uploads14/knowledge/3d6d8bd179824740914928ae72d85434.txt',3207,3,1,NULL,'2026-06-29 08:27:26','2026-06-29 08:27:27'),
+(7,'其他问题.pdf','pdf','uploads14/knowledge/d9b6195096ca41338190be2333104105.pdf',473663,6,1,NULL,'2026-06-29 08:27:30','2026-06-29 08:27:30');
 
 /*Table structure for table `t_order` */
 
