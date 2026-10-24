@@ -3,11 +3,7 @@
  * 统一处理Token和响应
  */
 const API_PORT = 8000
-/**
- * 真机联调用的电脑地址。换 Wi-Fi 后只改这一行，填 ipconfig 里 WLAN 的 IPv4。
- * 开发者工具模拟器始终走 127.0.0.1，不受这里影响。
- */
-const DEVICE_HOST = '192.168.3.206'
+const DEVICE_HOST = '127.0.0.1'
 
 function resolveHost() {
   try {

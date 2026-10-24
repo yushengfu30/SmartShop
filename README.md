@@ -47,91 +47,100 @@ SmartShop/
 
 ## 环境要求
 
+先装好这些，并保证 MySQL 已启动：
+
 - Python 3.10+
 - Node.js 18+
-- MySQL 8
-- 微信开发者工具
-- 阿里云百炼 API Key（只用商城、不测客服时可先不配）
+- MySQL 8（默认按账号 `root`、密码 `123456`、端口 `3306`）
+- 微信开发者工具（跑小程序时需要）
+
+按下面 1～4 做完后，管理后台和小程序模拟器就可以登录、浏览商品、下单。AI 客服见第 5 步，不配也能先跑商城。
 
 ## 启动
 
-### 1. 数据库
+在项目根目录 `SmartShop` 下操作。下面命令按 **Windows PowerShell** 写；Git Bash 里把 `$env:NAME="value"` 换成 `export NAME=value`。
 
-修改 `server/config.py` 中的 `DATABASE_URL`，默认：
+### 1. 导入数据库
 
-```text
-mysql+pymysql://root:123456@127.0.0.1:3306/db_ai_shop?charset=utf8mb4
-```
+若 MySQL 密码不是 `123456`，先改 `server/config.py` 里的 `DATABASE_URL`。
 
-导入脚本：
+**Git Bash / CMD：**
 
 ```bash
-mysql -u root -p < server/sql/db_ai_shop.sql
+mysql -u root -p --default-character-set=utf8mb4 < server/sql/db_ai_shop.sql
 ```
 
-脚本会创建 `db_ai_shop`，并写入管理员、用户、商品等演示数据。
+**PowerShell：**
 
-### 2. 后端
+```powershell
+Get-Content server/sql/db_ai_shop.sql -Encoding UTF8 | mysql -u root -p --default-character-set=utf8mb4
+```
 
-```bash
+也可以打开 MySQL 客户端，执行 `server/sql/db_ai_shop.sql`。脚本会创建库 `db_ai_shop` 并写入演示数据。
+
+### 2. 启动后端
+
+```powershell
 cd server
 pip install -r requirements.txt
-set OPENAI_API_KEY=你的百炼Key
 python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Linux / macOS 用 `export OPENAI_API_KEY=你的百炼Key`。
+日志出现 `Uvicorn running on http://0.0.0.0:8000` 即成功。浏览器打开：
 
-启动成功后：
+- http://127.0.0.1:8000/docs
+- http://127.0.0.1:8000/api/health
 
-- 接口文档：http://127.0.0.1:8000/docs
-- 健康检查：http://127.0.0.1:8000/api/health
+这个窗口保持运行，再开一个终端做后面的步骤。
 
-模型与向量相关配置在 `server/config.py`：
+### 3. 启动管理后台
 
-| 项 | 默认值 |
-|---|---|
-| 对话模型 | `qwen3.8-max` |
-| Embedding | `text-embedding-v4`（2048 维） |
-| 分块 | 500 字，重叠 50 |
-| 检索 | Top-4 |
-
-向量数据落在 `server/chroma_db/`。上传目录是项目根下的 `uploads14/`。
-
-本机开发只跑管理后台时，`--host 127.0.0.1` 即可。小程序真机联调必须 `--host 0.0.0.0`，否则手机访问不到。
-
-### 3. 管理后台
-
-```bash
+```powershell
 cd client
 npm install
 npm run dev
 ```
 
-浏览器打开 http://127.0.0.1:5173。Vite 已把 `/api`、`/uploads` 代理到 `http://127.0.0.1:8000`。
+浏览器打开 http://127.0.0.1:5173
 
-演示账号：`admin` / `12345678`
+- 账号：`admin`
+- 密码：`12345678`
 
-### 4. 微信小程序
+能进入数据看板、商品列表即后台已通。
 
-用微信开发者工具导入 `weixin/` 目录。
+### 4. 打开微信小程序
 
-`weixin/utils/request.js` 会按运行环境选主机：
+1. 用微信开发者工具导入项目，目录选 `weixin/`
+2. 右上角 **详情 → 本地设置**，勾选「不校验合法域名、web-view、TLS 版本以及 HTTPS 证书」
+3. 用模拟器编译运行（默认请求 `http://127.0.0.1:8000`，不用改代码）
 
-- 开发者工具模拟器 → `http://127.0.0.1:8000/api`
-- 真机 → `http://DEVICE_HOST:8000/api`
+演示账号：`user001` / `123456`，也可以在登录页注册。
 
-换网络后只改 `DEVICE_HOST`，填电脑 WLAN 的 IPv4。模拟器不受影响。
+至此商城可以浏览、加购、下单。支付是模拟接口。
 
-演示账号：`user001` / `123456`（也可在小程序里注册）
+### 5. 启用 AI 客服（可选）
 
-**真机联调**
+1. 申请阿里云百炼 API Key，兼容接口地址默认是 `https://dashscope.aliyuncs.com/compatible-mode/v1`
+2. 停掉后端，在启动前设置环境变量后再启动：
 
-1. 手机和电脑同一 Wi-Fi，后端用 `--host 0.0.0.0` 启动
-2. 开发者工具勾选「不校验合法域名、web-view、TLS 版本以及 HTTPS 证书」
-3. 用「真机调试」，不要用「预览」（预览会强制校验合法域名）
-4. 基础库 ≥ 3.8.7 时，真机 `image` 组件不加载 `http` 图片。本地调试可把基础库降到 **3.8.6**
-5. 不在同一局域网时，用手机热点或内网穿透，不要指望手机访问你电脑的内网 IP
+```powershell
+cd server
+$env:OPENAI_API_KEY="你的百炼Key"
+python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+3. 用管理员登录管理后台，打开「知识库管理」，上传 `知识库测试文件/` 里的文档（支持 txt / doc / pdf / markdown），等状态变为已向量化
+4. 小程序进入「AI 客服」即可提问
+
+模型配置在 `server/config.py`：对话 `qwen3.8-max`，Embedding `text-embedding-v4`，分块 500 / 重叠 50，检索 Top-4。向量数据在 `server/chroma_db/`，上传文件在项目根目录 `uploads14/`。
+
+### 6. 真机调试（可选）
+
+模拟器不需要这一步。
+
+1. 把 `weixin/utils/request.js` 中的 `DEVICE_HOST` 改成电脑 WLAN 的 IPv4
+2. 手机和电脑连同一 Wi-Fi，后端保持 `--host 0.0.0.0`
+3. 开发者工具用「真机调试」；基础库建议选 **3.8.6**（更高版本真机不加载 http 图片）
 
 ## RAG 流程
 
@@ -146,8 +155,6 @@ npm run dev
     → Qwen 生成回答
     → 按 session_id 写入 t_chat_message
 ```
-
-知识库示例文件在 `知识库测试文件/`，管理后台「知识库管理」上传即可。删除或重新向量化会同步更新 Chroma。
 
 ## 主要接口
 
@@ -170,4 +177,3 @@ npm run dev
 - 登录是账号密码，不是微信 `code` 登录
 - RAG 按当前问题检索，历史消息会落库，但不会拼进下一轮 Prompt
 - 知识库向量化在上传请求里同步完成
-- `OPENAI_API_KEY`、数据库账号不要提交到公开仓库
